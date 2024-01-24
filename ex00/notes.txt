@@ -1,0 +1,16 @@
+(*) struct vs class in c++:
+
+struct and class can be used interchangeably, but the class keyword is the most popular in c++.
+the main difference is the default access control: while everything inside a class is private
+by default, everything inside a struct is public by default.
+the main reason why structs exist in c++ is for compatibility with c.
+So, There is no difference, apart from default encapsulation.
+
+(*) friend keyword:
+
+this keyword is used with classes and functions. a friend class or function can access
+the private and protected members. for functions they can be either global or member functions
+of other classes.
+Member functions cannot be declared as friends.
+for the std::ostream &operator<< function can be declared as a member function but the problem
+is that it can only have one argument. that's why you need to use the friend keyword.
