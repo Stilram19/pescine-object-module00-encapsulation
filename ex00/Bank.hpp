@@ -1,13 +1,17 @@
 # include <iostream>
 # include <vector>
+# include <climits>
+# include "Account.hpp"
 
-struct Account;
+# define MIN_AMOUNT 100
+# define MAX_ACCOUNTS_NUM 1000000
+# define MAX_WITHDRAW 2000
 
 struct Bank
 {
     private:
         // private attributes
-        static int current_id;
+        int current_id;
         int liquidity;
         std::vector<Account *> clientAccounts;
 
@@ -24,7 +28,10 @@ struct Bank
         // methods
         void createAccount(int initial_value);
         void deleteAccount(int id);
-        void modifyAccount(int value);
+        void loanClient(int id, int value) const;
+        void payLoan(int id, int value);
+        void depositAmount(int id, int value);
+        void moneyWithdraw(int id, int value) const;
 
         friend std::ostream& operator << (std::ostream& p_os, const Bank& p_bank);
 };

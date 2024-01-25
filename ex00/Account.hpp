@@ -6,23 +6,29 @@ struct Account
         // Attributes
         int id;
         int value;
+        int loan_amount;
 
         // copying is prohibited for accounts
         Account(const Account &);
         Account &operator=(const Account &);
 
+        // cannot construct by default (the id and value are dependent on the bank)
+        Account();
     public:
         // contructor & destructor
-        Account();
+        Account(int id, int value);
         ~Account();
 
+    public:
         // setters
-        void setId(int id);
         void setValue(int value);
+        void addLoan(int value);
+        void payLoan(int value);
 
         // getters
-        void getId(void);
-        void getValue(void);
+        int getId(void) const;
+        int getValue(void) const;
+        int getTotalLoan(void) const;
 
     public:
         friend std::ostream& operator << (std::ostream& p_os, const Account& p_account);

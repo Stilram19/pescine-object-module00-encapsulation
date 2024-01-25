@@ -1,4 +1,5 @@
 # include <iostream>
+# include <climits>
 
 class myClass {
     public:
@@ -6,8 +7,11 @@ class myClass {
 };
 
 int main(void) {
-    myClass c;
+    int a, b, c = INT_MAX;
 
-    std::cout << c.a << std::endl;
+    a = 0.95 * c;
+    b = 0.05 * c;
+
+    std::cout << a << ", " << b << ", " << a + b << std::endl;
     return (0);
 }
