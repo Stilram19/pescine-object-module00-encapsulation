@@ -1,6 +1,5 @@
-NAME=	btc
-SRCS=	main.cpp \
-		BitcoinExchange.cpp
+NAME=	bank
+SRCS=	Account.cpp Bank.cpp main.cpp
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
@@ -25,3 +24,6 @@ re: fclean all
 
 run: re
 	./$(NAME)
+
+leaks: re
+	valgrind --leak-check=full ./$(NAME)

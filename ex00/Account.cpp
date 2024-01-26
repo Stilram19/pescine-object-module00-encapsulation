@@ -13,30 +13,32 @@ void Account::setValue(int value) {
     this->value = value;
 }
 
-void Account::addLoan(int value) {
-    this->loan_amount += value;
+void Account::setLoan(int value) {
+    this->loan_amount = value;
 }
 
 void Account::payLoan(int value) {
     this->loan_amount -= value;
+    this->value -= value;
 }
 
 // getters
-int Account::getId(void) const {
+int Account::getId() const {
     return this->id;
 }
 
-int Account::getValue(void) const {
+int Account::getValue() const {
     return this->value;
 }
 
-int Account::getTotalLoan(void) const {
+int Account::getTotalLoan() const {
     return this->loan_amount;
 }
 
 // friend function (global scope)
 std::ostream& operator << (std::ostream& p_os, const Account& p_account)
 {
-    p_os << "[" << p_account.id << "] - [" << p_account.value << "]";
+    p_os << "[id: " << p_account.id << "] - [amount: " << p_account.value << "] - [totalLoan: " \
+    << p_account.loan_amount << "]";
     return (p_os);
 }

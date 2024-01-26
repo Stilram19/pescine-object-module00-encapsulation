@@ -22,13 +22,13 @@ struct Account
     public:
         // setters
         void setValue(int value);
-        void addLoan(int value);
+        void setLoan(int value);
         void payLoan(int value);
 
         // getters
-        int getId(void) const;
-        int getValue(void) const;
-        int getTotalLoan(void) const;
+        int getId() const;
+        int getValue() const;
+        int getTotalLoan() const;
 
     public:
         friend std::ostream& operator << (std::ostream& p_os, const Account& p_account);

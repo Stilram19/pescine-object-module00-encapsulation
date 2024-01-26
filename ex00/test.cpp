@@ -7,11 +7,10 @@ class myClass {
 };
 
 int main(void) {
-    int a, b, c = INT_MAX;
+    int a = 100, b = 101;
+    int brute_amount = a + b;
+    int net_amount = a + b * 0.95;
 
-    a = 0.95 * c;
-    b = 0.05 * c;
-
-    std::cout << a << ", " << b << ", " << a + b << std::endl;
+    std::cout << brute_amount - net_amount << ", " << b * 0.95 << ", " << net_amount << std::endl;
     return (0);
 }

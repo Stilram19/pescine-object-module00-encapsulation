@@ -13,6 +13,7 @@ struct Bank
         // private attributes
         int current_id;
         int liquidity;
+        int totalAccounts;
         std::vector<Account *> clientAccounts;
 
         // copying banks is prohibited
@@ -28,9 +29,10 @@ struct Bank
         // methods
         void createAccount(int initial_value);
         void deleteAccount(int id);
-        void loanClient(int id, int value) const;
+        void loanClient(int id, int value);
         void payLoan(int id, int value);
         void depositAmount(int id, int value);
+        void modifyAmount(int id, int value);
         void moneyWithdraw(int id, int value) const;
 
         friend std::ostream& operator << (std::ostream& p_os, const Bank& p_bank);
