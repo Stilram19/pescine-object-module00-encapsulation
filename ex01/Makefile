@@ -1,5 +1,5 @@
-NAME=	bank
-SRCS=	Bank.cpp main.cpp
+NAME=	graph
+SRCS=	Graph.cpp Bank.cpp main.cpp
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
