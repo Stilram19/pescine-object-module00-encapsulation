@@ -11,9 +11,8 @@ struct Vector2 {
         Vector2();
         Vector2(float X, float Y);
 
-    // getters & setters
+    // getters
     public:
         float   getX() const;
         float   getY() const;
-        void    reset(float a);
 };

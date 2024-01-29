@@ -1,134 +1,117 @@
 # include "Bank.hpp"
 
-void test1() {
+void accountCreationTest1(int initial_deposit) {
 	Bank b;
 
 	std::cout << b;
-	b.createAccount(0);
-	std::cout << b;
-	b.createAccount(-1);
-	std::cout << b;
-	b.createAccount(10);
-	std::cout << b;
-	b.createAccount(99);
-	std::cout << b;
-	b.createAccount(100);
+	b.createAccount(initial_deposit);
 	std::cout << b;
 }
 
-void	test2() {
+void	accountCreationTest2() {
 	Bank b;
 
 	std::cout << b;
+	for (int i = 0; i < 12; i++) {
+		b.createAccount(100 + i);
+		std::cout << b;
+	}
+}
+
+void	depositTest1(int id, int deposit) {
+	Bank b;
+
 	b.createAccount(100);
 	std::cout << b;
-	b.createAccount(101);
-	std::cout << b;
-	b.createAccount(102);
-	std::cout << b;
-	b.createAccount(103);
-	std::cout << b;
-	b.createAccount(104);
-	std::cout << b;
-	b.createAccount(105);
-	std::cout << b;
-	b.createAccount(106);
-	std::cout << b;
-	b.createAccount(107);
-	std::cout << b;
-	b.createAccount(108);
-	std::cout << b;
-	b.createAccount(109);
-	std::cout << b;
-	b.createAccount(110);
-	std::cout << b;
-	b.createAccount(14555);
+	b.depositAmount(id, deposit);
 	std::cout << b;
 }
 
-void	test3() {
+void	depositTest2() {
 	Bank b;
 
-	b.createAccount(100);
+	for (int i = 0; i < 10; i++) {
+		b.createAccount(100 + i);
+	}
+
 	std::cout << b;
-	b.depositAmount(1, 10);
+
+	for (int i = 0; i < 10; i++) {
+		b.depositAmount(i + 1, 100 + i);
+		std::cout << b;
+	}
+}
+
+void	loanTest1(int id, int initial_amount, int value) {
+	Bank b;
+
 	std::cout << b;
-	b.depositAmount(2, 2000);
+	b.createAccount(initial_amount);
 	std::cout << b;
-	b.depositAmount(1, 101);
-	std::cout << b;
-	b.depositAmount(1, 2094);
-	std::cout << b;
-	b.depositAmount(1, 100);
+	b.loanClient(id, value);
 	std::cout << b;
 }
 
-void	test4() {
+void	loanTest2() {
 	Bank b;
 
-	b.createAccount(100);
-	b.loanClient(1, 2);
-	std::cout << b;
-	b.createAccount(100000);
+	b.createAccount(10000);
 	std::cout << b;
 	b.loanClient(1, 100);
 	std::cout << b;
-	b.loanClient(1, 1000);
-	std::cout << b;
-	b.payLoan(1, 50);
-	std::cout << b;
-	b.payLoan(1, 100);
-	std::cout << b;
-	b.payLoan(1, 60);
-	std::cout << b;
-	b.loanClient(1, 150);
-	std::cout << b;
-	b.moneyWithdraw(1, 150);
-	std::cout << b;
-	b.payLoan(1, 165);
-	std::cout << b;
-	b.depositAmount(1, 100);
-	std::cout << b;
-	b.payLoan(1, 165);
+	b.loanClient(1, 100);
 	std::cout << b;
 }
 
-void	test5() {
+void	loanTest3() {
 	Bank b;
 
-	b.createAccount(100);
-	b.createAccount(100);
-	b.createAccount(100);
-	b.createAccount(100);
-	b.createAccount(100);
-
+	b.createAccount(10000);
 	std::cout << b;
-
-	b.modifyAmount(1, 0);
-	b.modifyAmount(2, 400);
-	b.modifyAmount(3, 123);
-
+	b.loanClient(1, 100);
 	std::cout << b;
-
-	b.deleteAccount(20);
-	b.deleteAccount(2);
-	b.deleteAccount(5);
-
+	b.payLoan(1, 110);
 	std::cout << b;
-
-	b.createAccount(1000);
-
+	b.loanClient(1, 100);
 	std::cout << b;
 }
 
-void	test6() {
+void	deleteAccountTest(int id) {
+	Bank b;
+
+	for (int i = 0; i < 10; i++) {
+		b.createAccount(100 + i);
+	}
+
+	std::cout << "(*) BEFORE: " << std::endl;
+	std::cout << b;
+
+	b.deleteAccount(id);
+
+	std::cout << "(*) AFTER: " << std::endl;
+	std::cout << b;
+}
+
+void	modifyAmountTest(int id, int value) {
+	Bank b;
+
+	for (int i = 0; i < 10; i++) {
+		b.createAccount(100 + i);
+	}
+
+	std::cout << "(*) BEFORE: " << std::endl;
+	std::cout << b;
+
+	b.modifyAmount(id, value);
+
+	std::cout << "(*) AFTER: " << std::endl;
+	std::cout << b;
+}
+
+void	overflowTest1() {
 	Bank b;
 
 	b.createAccount(100);
-	std::cout << b;
-	b.modifyAmount(1, 200);
-	std::cout << b;
-	b.modifyAmount(1, 100);
 	std::cout << b;
 	for (int i = 0; i < 25; i++) {
 		b.createAccount(INT_MAX);
@@ -137,7 +120,7 @@ void	test6() {
 	std::cout << b;
 }
 
-void	test7() {
+void	overflowTest2() {
 	Bank b;
 
 	b.createAccount(INT_MAX);
@@ -147,16 +130,26 @@ void	test7() {
 
 int	main() {
 	try {
-		// test1();
-		// test2();
-		// test3();
-		// test4();
-		// test5();
-		// test6();
-		test7();
+		// accountCreationTest1(10);
+		// accountCreationTest2();
+		// depositTest1(1, 10000);
+		// depositTest2();
+		// loanTest1(1, 10000, 100);
+		// loanTest2();
+		// loanTest3();
+		// deleteAccountTest(110);
+		// modifyAmountTest(1, 130);
+		// overflowTest1();
+		// overflowTest2();
 	}
-	catch (std::exception &e) {
+	catch (const std::runtime_error &e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
+	}
+	catch (const std::out_of_range &e) {
+		std::cout << "OUT_OF_RANGE: No such account with the provided Id" << std::endl;
+	}
+	catch (const std::bad_alloc &e) {
+		std::cout << "BAD_ALLOC: We're out of memory!" << std::endl;
 	}
 	return (0);
 }

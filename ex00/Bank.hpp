@@ -1,27 +1,25 @@
 # include <iostream>
-# include <vector>
+# include <map>
 # include <climits>
 
 # define MIN_AMOUNT 100
-# define MIN_AMOUNT_STR "100"
 # define MAX_ACCOUNTS_NUM 1000000
 # define MAX_WITHDRAW 2000
-# define MAX_WITHDRAW_STR "2000"
 
 struct Bank
 {
     // encapsulating the Account struct
     private:
         struct Account {
+            private:
+                // copying is prohibited for accounts
+                Account(const Account &);
+                Account &operator=(const Account &);
             public:
                 // Attributes
                 int id;
                 int value;
                 int loan_amount;
-
-                // copying is prohibited for accounts
-                Account(const Account &);
-                Account &operator=(const Account &);
 
                 // cannot construct by default (the id and value are dependent on the bank)
                 Account();
@@ -50,7 +48,7 @@ struct Bank
         int current_id;
         int liquidity;
         int totalAccounts;
-        std::vector<Bank::Account *> clientAccounts;
+        std::map<int, Bank::Account *> clientAccounts;
 
         // copying banks is prohibited
         Bank(const Bank &);
@@ -71,5 +69,6 @@ struct Bank
         void modifyAmount(int id, int value);
         void moneyWithdraw(int id, int value) const;
 
+        Bank::Account &operator[](int id) const;
         friend std::ostream& operator << (std::ostream& p_os, const Bank& p_bank);
 };

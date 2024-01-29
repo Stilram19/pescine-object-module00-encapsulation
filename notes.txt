@@ -34,3 +34,10 @@ example of encapsulation: login into your account, the implementation of verific
 (*) Nested Classes/structs: since logically, there is no Account without a Bank, you may consider
 to encapsulate the declaration of Account within the declaration of Bank, thus it won't be accessible from outside
 the namespace of Bank.
+
+(*) Subscript operator overloading: it's a very good idea to overload subscript operator
+because it makes the code user friendly (better than setters and getters in some cases).
+the fact that we're returning a reference to an element in the class, the user may modify it as well as read it,
+and to encapsulate data, you may consider to return a const reference for read purposes only.
+
+(*) throw; : By using throw; without specifying an exception object (throw;), you re-throw the caught exception as-is, preserving its original type and context, including the stack trace. This ensures that the exception propagates up the call stack with all relevant information intact.
