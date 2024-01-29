@@ -35,9 +35,15 @@ void Bank::deleteAccount(int id) {
 
     size_t new_liquidity = this->liquidity + acc.getValue();
 
-    if (new_liquidity > INT_MAX) {
-        throw std::runtime_error("Error: cannot delete account for the moment, try later");
+    if (acc.getTotalLoan() > 0) {
+        throw std::runtime_error("cannot delete account, you must pay your debt first!");
     }
+
+    if (new_liquidity > INT_MAX) {
+        throw std::runtime_error("cannot delete account for the moment, try later");
+    }
+    // whatever is in the account will go to the bank
+    // to give it back to the client.
     this->liquidity += acc.getValue();
     delete (this->clientAccounts.at(id));
     this->clientAccounts.erase(id);
