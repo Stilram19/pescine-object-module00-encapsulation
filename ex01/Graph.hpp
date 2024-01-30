@@ -1,24 +1,34 @@
+# include <fstream>
+# include <string>
+# include <sstream>
 # include "Vector2.hpp"
+# include "HelpException.hpp"
 
-# define MAX_GRAPH_SIZE 100
-# define MAX_COORDINATE 9
-# define SQRT_OF(X) Graph::sqrt(X)
+# define MAX_COORDINATE 10
+# define MIN_COORDINATE 2
 
 class Graph {
     private:
-        size_t                  g_size;
+        Vector2                 g_size;
         std::vector<Vector2 *>  points;
 
     public:
         Graph();
-        Graph(size_t size);
+        Graph(const Vector2 &size);
 
     // methods
     private:
-        void         displayGraph();
-        static int   sqrt(size_t x);
+        bool    hasPoint(int x, int y) const;
 
     public:
-        void            addPoint(const Vector2 &p);
-        static size_t   adjust_size(size_t size);
+        void        addPoint(const Vector2 &p);
+        void        simpleGraphDisplay() const;
+        void        parse_vector(const std::string &key, const std::string &value);
+        void        parse_line(const std::string &value);
+        void        parse_input_file(std::ifstream &is);
+
+        // static functions
+        static void displayHelp();
+        static bool is_float(const std::string &literal);
+        static float float_converter(const std::string &str);
 };

@@ -15,4 +15,6 @@ struct Vector2 {
     public:
         float   getX() const;
         float   getY() const;
+        void    resetX(float X);
+        void    resetY(float Y);
 };

@@ -41,3 +41,6 @@ the fact that we're returning a reference to an element in the class, the user m
 and to encapsulate data, you may consider to return a const reference for read purposes only.
 
 (*) throw; : By using throw; without specifying an exception object (throw;), you re-throw the caught exception as-is, preserving its original type and context, including the stack trace. This ensures that the exception propagates up the call stack with all relevant information intact.
+
+(*) streams: In computer science, a stream is a sequence of data elements made available over time. It is a concept used to model data flow, where data is processed piece by piece as it becomes available, rather than waiting for the entire dataset to be loaded into memory.
+of course this is done using a buffer (for reading from a file or writing to a file).

@@ -1,5 +1,5 @@
 NAME=	graph
-SRCS=	Graph.cpp Bank.cpp main.cpp
+SRCS=	Vector2.cpp Graph.cpp main.cpp
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
