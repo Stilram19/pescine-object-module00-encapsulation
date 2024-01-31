@@ -1,5 +1,6 @@
 NAME=	graph
 SRCS=	Vector2.cpp Graph.cpp main.cpp
+FILENAME= input
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
@@ -23,7 +24,7 @@ fclean: clean
 re: fclean all
 
 run: re
-	./$(NAME)
+	./$(NAME) $(FILENAME)
 
 leaks: re
-	valgrind --leak-check=full ./$(NAME)
+	valgrind --leak-check=full ./$(NAME) $(FILENAME)

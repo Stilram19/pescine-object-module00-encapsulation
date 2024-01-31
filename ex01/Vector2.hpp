@@ -10,6 +10,8 @@ struct Vector2 {
     public:
         Vector2();
         Vector2(float X, float Y);
+        bool operator==(const Vector2 &other) const;
+        bool operator!=(const Vector2 &other) const;
 
     // getters
     public:

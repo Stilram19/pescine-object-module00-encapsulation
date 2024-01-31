@@ -1,19 +1,5 @@
 # include "Graph.hpp"
 
-// void    test1() {
-//     Vector2 v(2, 2);
-//     Graph g(v);
-
-//     for (int i = 0; i <= 4; i++) {
-//         v.resetX(i);
-//         for (int j = 0; j <= 4; j++) {
-//             v.resetY(j);
-//             g.addPoint(v);
-//             std::cout << "*************************************" << std::endl;
-//         }
-//     }
-// }
-
 int main(int argc, char **argv) {
 
     try {
@@ -29,7 +15,11 @@ int main(int argc, char **argv) {
             throw std::runtime_error("Couldn't open the file");
         }
 
-        g->parse_input_file(is);        
+        g.parse_and_execute(is);      
+    }
+    catch (const HelpException &e) {
+        std::cout << "INVALID INPUT: " << e.what() << std::endl;
+        Graph::displayHelp();
     }
     catch (const std::runtime_error &e) {
         std::cout << "ERROR: " << e.what() << std::endl;

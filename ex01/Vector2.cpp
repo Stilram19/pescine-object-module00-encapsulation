@@ -10,12 +10,20 @@ Vector2::Vector2(float X, float Y) {
     this->Y = Y;
 }
 
+bool Vector2::operator==(const Vector2 &other) const {
+    return (this->getX() == other.getX() && this->getY() == other.getY());
+}
+
+bool Vector2::operator!=(const Vector2 &other) const {
+    return !((*this) == other);
+}
+
 float Vector2::getX() const {
-    return this->X;
+    return static_cast<int>(this->X);
 }
 
 float Vector2::getY() const {
-    return this->Y;
+    return static_cast<int>(this->Y);
 }
 
 void Vector2::resetX(float X) {
