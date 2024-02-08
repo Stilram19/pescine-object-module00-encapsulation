@@ -1,3 +1,6 @@
+#ifndef GRPAH_HPP
+# define GRAPH_HPP
+
 # include <fstream>
 # include <string>
 # include <sstream>
@@ -36,3 +39,5 @@ class Graph {
         static float float_converter(const std::string &str);
         static void trim(std::string &str);
 };
+
+#endif

@@ -44,3 +44,14 @@ and to encapsulate data, you may consider to return a const reference for read p
 
 (*) streams: In computer science, a stream is a sequence of data elements made available over time. It is a concept used to model data flow, where data is processed piece by piece as it becomes available, rather than waiting for the entire dataset to be loaded into memory.
 of course this is done using a buffer (for reading from a file or writing to a file).
+
+(*) Endianness: the order in which the bytes of a word are stored in a computer system
+counting only byte significance with earliness.
+
+(*) big endianness: storing the most significant byte in the smallest address.
+(*) little endianness: storing the most significant byte in the biggest address.
+
+big endianness is the dominant ordering in network protocols, while little endianness is the dominant
+ordering for processor architectures.
+
+big endianness can be refered to as network byte order.

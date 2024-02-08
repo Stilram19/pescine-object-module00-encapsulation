@@ -1,3 +1,6 @@
+#ifndef VECTOR2_HPP
+# define VECTOR2_HPP
+
 # include <iostream>
 # include <vector>
 # include <cmath>
@@ -20,3 +23,5 @@ struct Vector2 {
         void    resetX(float X);
         void    resetY(float Y);
 };
+
+#endif
