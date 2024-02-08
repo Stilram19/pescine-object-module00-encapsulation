@@ -10,11 +10,43 @@
 
 # define MAX_COORDINATE 10
 # define MIN_COORDINATE 2
+# define PIXEL_SCALE 2
 
 class Graph {
+
+    // Png class encapsulated within the Graph class
+    private:
+        class Png {
+            private:
+                size_t img_width;
+                size_t img_height;
+                int *img_data;
+
+            private:
+                Png();
+                Png(const Png &other);
+                Png &operator=(const Png &other);
+
+            private:
+                static int big_endian(int a);
+                void write_png_header(std::ofstream &os) const;
+                void displayData() const;
+                void write_first_chunk(std::ofstream &os) const;
+                void write_data_chunk(std::ofstream &os) const;
+                void write_last_chunk(std::ofstream &os) const;
+
+            public:
+                Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size);
+                ~Png();
+
+                void produce_png() const;
+        };
+
+    // Attributes
     private:
         Vector2                 g_size;
         std::vector<Vector2 *>  points;
+        Graph::Png              *png;
 
     public:
         Graph();

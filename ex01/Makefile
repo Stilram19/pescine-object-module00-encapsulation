@@ -1,6 +1,7 @@
 NAME=	graph
 SRCS=	Vector2.cpp Graph.cpp main.cpp
 FILENAME= input
+PNGFILE= Graph.png
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
@@ -16,7 +17,7 @@ ${NAME}: ${OBJS}
 	${CPP} ${CPPFLAGS} ${OBJS} -o ${NAME}
 
 clean:
-	${RM} ${OBJS}
+	${RM} ${OBJS} ${PNGFILE}
 
 fclean: clean
 	${RM} ${NAME}

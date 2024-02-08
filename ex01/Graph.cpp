@@ -1,6 +1,6 @@
 # include "Graph.hpp"
 
-Graph::Graph() : g_size(MIN_COORDINATE, MIN_COORDINATE) {}
+Graph::Graph() : g_size(MIN_COORDINATE, MIN_COORDINATE), png(NULL) {}
 
 Graph::Graph(const Vector2 &size) {
     if (size.getX() > MAX_COORDINATE || size.getY() > MAX_COORDINATE
@@ -8,12 +8,14 @@ Graph::Graph(const Vector2 &size) {
         throw std::runtime_error("Size is too big or too small");
     }
     this->g_size = size;
+    this->png = NULL;
 }
 
 Graph::~Graph() {
     for (std::vector<Vector2 *>::iterator it = this->points.begin(); it != this->points.end(); it++) {
         delete (*it);
     }
+    delete png;
 }
 
 void Graph::resize_graph(const Vector2 &new_size) {
@@ -108,6 +110,8 @@ void    Graph::parse_and_execute(std::ifstream &is) {
     }
 
     this->simpleGraphDisplay();
+    this->png = new Png(this->points, this->g_size);
+    this->png->produce_png();
 }
 
 void    Graph::parse_vector(const std::string &key, const std::string &value) {
@@ -123,16 +127,8 @@ void    Graph::parse_vector(const std::string &key, const std::string &value) {
     v1 = value.substr(0, pos);
     v2 = value.substr(pos + 1);
 
-    // std::cout << "(*) BEFORE: " << std::endl;
-    // std::cout << "v1: |" << v1 << "|" << std::endl;
-    // std::cout << "v2: |" << v2 << "|" << std::endl;
-
     Graph::trim(v1);
-    Graph::trim(v2);    
-
-    // std::cout << "(*) AFTER: " << std::endl;
-    // std::cout << "v1: |" << v1 << "|" << std::endl;
-    // std::cout << "v2: |" << v2 << "|" << std::endl;
+    Graph::trim(v2);
 
     if (!Graph::is_float(v1) || !Graph::is_float(v2)) {
         throw HelpException("the coordinates must be floats");
@@ -297,4 +293,136 @@ void Graph::trim(std::string &str) {
         return ;
     }
     str = str.substr(start, end - start + 1);
+}
+
+// Png implementation
+
+Graph::Png::Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size) {
+    this->img_width = (g_size.getX() + 1) * PIXEL_SCALE;
+    this->img_height = (g_size.getY() + 1) * PIXEL_SCALE; 
+    this->img_data = new int[this->img_width * this->img_height];
+
+    for (size_t i = 0; i < v_data.size(); i++) {
+        size_t init_j = v_data[i]->getX();
+        size_t init_k = g_size.getY() - v_data[i]->getY();
+        std::cout << "POINT: " << init_j << ", " << init_k << std::endl;
+        for (size_t j = init_j * PIXEL_SCALE; j < (init_j + 1) * PIXEL_SCALE; j++) {
+            for (size_t k = init_k * PIXEL_SCALE; k < (init_k + 1) * PIXEL_SCALE; k++) {
+            std::cout << "J: " << j << ", " << "K: " << k << std::endl;
+                int index = j + k * this->img_width;
+                this->img_data[index] = 0xffffffff;
+            }
+        }
+    }
+}
+
+Graph::Png::~Png() {
+    delete this->img_data;
+}
+
+void Graph::Png::produce_png() const {
+    // this->displayData()
+    // name 
+    std::ofstream os("graph.png", std::ios_base::out | std::ios_base::binary);
+
+    if (!os.is_open()) {
+        throw std::runtime_error("Can't open graph.png");
+    }
+
+    this->write_png_header(os);
+    this->write_first_chunk(os);
+    this->write_data_chunk(os);
+    this->write_last_chunk(os);
+    // append the last chunk
+
+    os.close();
+}
+
+void Graph::Png::write_first_chunk(std::ofstream &os) const {
+    int length = this->big_endian(13);
+    char *type = "IHDR";
+    int width = this->big_endian(this->img_width);
+    int height = this->big_endian(this->img_height);
+    char bit_depth = 8;
+    char color_type = 6;
+    char zero[] = {0, 0, 0};
+
+    // data length and chunk type
+    os.write(reinterpret_cast<char *>(&length), sizeof(int));
+    os.write(type, 4);
+
+    // chunk data
+    os.write(reinterpret_cast<char *>(&width), sizeof(int));
+    os.write(reinterpret_cast<char *>(&height), sizeof(int));
+    os.write(&bit_depth, 1);
+    os.write(&color_type, 1);
+    os.write(zero, 3);
+
+    // crc
+
+    if (os.fail()) {
+        throw std::runtime_error("Can't write to Graph.png");
+    }
+}
+
+void Graph::Png::write_data_chunk(std::ofstream &os) const {
+    int length = this->big_endian(this->img_width * this->img_height);
+    char *type = "IDAT";
+
+    // data length & chunk type
+    os.write(reinterpret_cast<char *>(&length), sizeof(int));
+    os.write(type, 4);
+
+    // chunk data
+    os.write(reinterpret_cast<char *>(this->img_data), length);
+
+    // crc
+
+    if (os.fail()) {
+        throw std::runtime_error("Can't write to Graph.png");
+    }
+}
+
+void Graph::Png::write_last_chunk(std::ofstream &os) const {
+    int length = 0;
+    char *type = "IEND";
+
+    // data length & chunk type
+    os.write(reinterpret_cast<char *>(&length), sizeof(int));
+    os.write(type, 4);
+
+    // no data
+
+    // crc
+    if (os.fail()) {
+        throw std::runtime_error("Can't write to Graph.png");
+    }
+}
+
+void Graph::Png::write_png_header(std::ofstream &os) const {
+    char header[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+
+    os.write(header, sizeof(header));
+    if (os.fail()) {
+        throw std::runtime_error("failed to write to Graph.png");
+    }
+}
+
+int Graph::Png::big_endian(int a) {
+    int b = 0;
+
+    b += (a & 0x000000ff) << 24;
+    b += (a & 0x0000ff00) << 8;
+    b += (a & 0x00ff0000) >> 8;
+    b += (a >> 24) & 0x000000ff;
+
+    return (b);
+}
+
+void Graph::Png::displayData() const {
+    std::cout << "IMG HEIGHT: " << this->img_height << ", IMG WIDTH: " << this->img_width << std::endl;
+    for (size_t i = 0; i < this->img_height * this->img_width; i++) {
+        std::cout << (this->img_data[i] ? "P" : "N");
+        std::cout << ((i + 1) % this->img_width == 0 ? "\n" : " ");
+    }
 }
