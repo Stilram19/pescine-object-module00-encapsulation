@@ -5,12 +5,15 @@
 # include <string>
 # include <sstream>
 # include <cmath>
+# include <cstring>
 # include "Vector2.hpp"
 # include "HelpException.hpp"
 
 # define MAX_COORDINATE 10
 # define MIN_COORDINATE 2
-# define PIXEL_SCALE 2
+# define PIXEL_SCALE 4
+# define POINT_COLOR 0xFF0000FF
+# define BACKGROUND_COLOR 0xFFFF0000
 
 class Graph {
 
@@ -21,6 +24,7 @@ class Graph {
                 size_t img_width;
                 size_t img_height;
                 int *img_data;
+                unsigned long crc_table[256];
 
             private:
                 Png();
@@ -34,6 +38,7 @@ class Graph {
                 void write_first_chunk(std::ofstream &os) const;
                 void write_data_chunk(std::ofstream &os) const;
                 void write_last_chunk(std::ofstream &os) const;
+                unsigned long cycle_redundancy_check(unsigned char *data, size_t len) const;
 
             public:
                 Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size);

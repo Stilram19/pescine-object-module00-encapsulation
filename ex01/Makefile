@@ -1,7 +1,7 @@
 NAME=	graph
 SRCS=	Vector2.cpp Graph.cpp main.cpp
 FILENAME= input
-PNGFILE= Graph.png
+PNGFILE= graph.png
 
 OBJS=	${SRCS:.cpp=.o}
 CPP=	c++
