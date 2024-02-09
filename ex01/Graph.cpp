@@ -402,7 +402,7 @@ void Graph::Png::write_last_chunk(std::ofstream &os) const {
 void Graph::Png::write_png_header(std::ofstream &os) const {
     char header[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
 
-    os.write(header, sizeof(header));
+    os.write(header, 8);
     if (os.fail()) {
         throw std::runtime_error("failed to write to Graph.png");
     }
@@ -411,9 +411,9 @@ void Graph::Png::write_png_header(std::ofstream &os) const {
 int Graph::Png::big_endian(int a) {
     int b = 0;
 
-    b += (a & 0x000000ff) << 24;
-    b += (a & 0x0000ff00) << 8;
-    b += (a & 0x00ff0000) >> 8;
+    b += (a << 24);
+    b += (a << 8) & 0x00ff0000;
+    b += (a >> 8) & 0x0000ff00;
     b += (a >> 24) & 0x000000ff;
 
     return (b);
