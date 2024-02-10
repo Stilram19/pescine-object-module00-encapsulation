@@ -26,6 +26,7 @@ re: fclean all
 
 run: re
 	./$(NAME) $(FILENAME)
+	open $(PNGFILE)
 
 leaks: re
 	valgrind --leak-check=full ./$(NAME) $(FILENAME)

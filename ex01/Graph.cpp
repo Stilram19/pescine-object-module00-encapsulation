@@ -305,12 +305,10 @@ Graph::Png::Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size) {
     for (size_t i = 0; i < v_data.size(); i++) {
         size_t init_j = v_data[i]->getX();
         size_t init_k = g_size.getY() - v_data[i]->getY();
-        // std::cout << "POINT: " << init_j << ", " << init_k << std::endl;
         for (size_t j = init_j * PIXEL_SCALE; j < (init_j + 1) * PIXEL_SCALE; j++) {
             for (size_t k = init_k * PIXEL_SCALE; k < (init_k + 1) * PIXEL_SCALE; k++) {
-            // std::cout << "J: " << j << ", " << "K: " << k << std::endl;
                 int index = j + k * this->img_width;
-                this->img_data[index] = 0xffffffff;
+                this->img_data[index] = BACKGROUND_COLOR;
             }
         }
     }
@@ -361,19 +359,14 @@ void Graph::Png::write_first_chunk(std::ofstream &os) const {
     char bit_depth = 8;
     char color_type = 6;
     char zero[] = {0, 0, 0};
-    // char crc_input_data[] = {'I', 'H', 'D', 'R', (char)(width >> 24), (char)(width >> 16),
-    // (char)(width >> 8), (char)(width), (char)(height >> 24), (char)(height >> 16), (char)(height >> 8), (char)(height), 8, 6, 0, 0, 0};
+    unsigned char crc_input_data[17];
 
-    unsigned char crc_input_data[] = {0x49, 0x48, 0x44, 0x52, 0x0, 0x0, 0x0, 0x06, 0x0, 0x0, 0x0, 0x6, 0x8, 0x6, 0x0, 0x0, 0x0};
-
-    // for (int i = 0; i < 17; i++) {
-    //     if (crc_input_data[i] != data[i]) {
-    //         std::cout << "FALSE" << std::endl;
-    //         return ;
-    //     }
-    // }
-
-    // std::cout << "TRUEEE" << std::endl;
+    memcpy(crc_input_data, type, sizeof(type) - 1);
+    memcpy(crc_input_data + 4, &width, sizeof(int));
+    memcpy(crc_input_data + 8, &height, sizeof(int));
+    memcpy(crc_input_data + 12, &bit_depth, 1);
+    memcpy(crc_input_data + 13, &color_type, 1);
+    memcpy(crc_input_data + 14, zero, 3);
 
     // data length and chunk type
     os.write(reinterpret_cast<char *>(&length), sizeof(int));
@@ -403,6 +396,8 @@ void Graph::Png::write_data_chunk(std::ofstream &os) const {
     int big_endian_length = this->big_endian(little_endian_length);
     char type[] = "IDAT";
     char *crc_input_data = new char[little_endian_length + sizeof(type) - 1];
+
+    // std::cout << "LITTLE ENDIAN LENGTH: " << little_endian_length << std::endl;
 
     memcpy(crc_input_data, type, sizeof(type) - 1);
     memcpy(crc_input_data + sizeof(type) - 1, this->img_data, little_endian_length);
@@ -438,15 +433,10 @@ void Graph::Png::write_last_chunk(std::ofstream &os) const {
 
     // no data
 
-    // crc
-    // unsigned int crc = this->cycle_redundancy_check(NULL, 0);
-    // unsigned int big_endian_crc = this->big_endian(crc);
-// 0xae426082
-// 0x826042ae
-    int c = 0x826042ae;
+    int crc = 0x826042ae;
+
     // write crc
-    // os.write(reinterpret_cast<char *>(&big_endian_crc), sizeof(unsigned int));
-    os.write(reinterpret_cast<char *>(&c), sizeof(unsigned int));
+    os.write(reinterpret_cast<char *>(&crc), sizeof(unsigned int));
 
     if (os.fail()) {
         throw std::runtime_error("Can't write to Graph.png");
