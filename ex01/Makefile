@@ -26,6 +26,8 @@ re: fclean all
 
 run: re
 	./$(NAME) $(FILENAME)
+
+png: run
 	open $(PNGFILE)
 
 leaks: re

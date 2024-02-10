@@ -298,17 +298,24 @@ void Graph::trim(std::string &str) {
 // Png implementation
 
 Graph::Png::Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size) {
-    this->img_width = (g_size.getX() + 1) * PIXEL_SCALE;
+    // 1 added to the width is for the filter bytes for each scanline (row)
+    this->img_width = (g_size.getX() + 1) * PIXEL_SCALE + 1;
     this->img_height = (g_size.getY() + 1) * PIXEL_SCALE;
-    this->img_data = new int[this->img_width * this->img_height];
+    this->img_size = this->img_width * this->img_height;
+    this->data_size = this->img_size + FORMAT_HEADER_SIZE;
+    this->img_data = new int[data_size];
 
+    // adding the format header
+    this->insert_format_header();
+
+    // adding the pixels and the filter bytes
     for (size_t i = 0; i < v_data.size(); i++) {
         size_t init_j = v_data[i]->getX();
         size_t init_k = g_size.getY() - v_data[i]->getY();
         for (size_t j = init_j * PIXEL_SCALE; j < (init_j + 1) * PIXEL_SCALE; j++) {
             for (size_t k = init_k * PIXEL_SCALE; k < (init_k + 1) * PIXEL_SCALE; k++) {
                 int index = j + k * this->img_width;
-                this->img_data[index] = BACKGROUND_COLOR;
+                this->img_data[index + FORMAT_HEADER_SIZE + 1] = POINT_COLOR;
             }
         }
     }
@@ -349,6 +356,19 @@ void Graph::Png::produce_png() const {
     this->write_last_chunk(os);
 
     os.close();
+}
+
+void Graph::Png::insert_format_header() {
+    // the zlib header (2 bytes)
+    this->img_data[0] = CMF;
+    this->img_data[1] = FLG;
+
+    // the essential infos (5 bytes)
+    this->img_data[2] = 0x01; // the first bit indicates the last data chunk
+    this->img_data[3] = this->img_size >> 8; // the size of the uncompressed data
+    this->img_data[4] = this->img_size;
+    this->img_data[5] = this->img_data[3] ^ 0xff; // the size in 1's complement (redundancy used for error detection)
+    this->img_data[6] = this->img_data[4] ^ 0xff;
 }
 
 void Graph::Png::write_first_chunk(std::ofstream &os) const {
@@ -392,7 +412,7 @@ void Graph::Png::write_first_chunk(std::ofstream &os) const {
 }
 
 void Graph::Png::write_data_chunk(std::ofstream &os) const {
-    int little_endian_length = this->img_width * this->img_height * sizeof(int);
+    int little_endian_length = this->data_size * sizeof(int);
     int big_endian_length = this->big_endian(little_endian_length);
     char type[] = "IDAT";
     char *crc_input_data = new char[little_endian_length + sizeof(type) - 1];
@@ -433,6 +453,7 @@ void Graph::Png::write_last_chunk(std::ofstream &os) const {
 
     // no data
 
+    // the original value is 0xae426082, i just want it to be represented in big endian.
     int crc = 0x826042ae;
 
     // write crc
@@ -474,8 +495,18 @@ int Graph::Png::big_endian(int a) {
 
 void Graph::Png::displayData() const {
     std::cout << "IMG HEIGHT: " << this->img_height << ", IMG WIDTH: " << this->img_width << std::endl;
-    for (size_t i = 0; i < this->img_height * this->img_width; i++) {
-        std::cout << (this->img_data[i] ? "P" : "N");
+
+    // std::cout << "FORMAT HEADER: " << std::endl;
+    // for (size_t i = 0; i < FORMAT_HEADER_SIZE; i++) {
+    //     std::cout << this->img_data[i];
+    //     if (i == FORMAT_HEADER_SIZE - 1)
+    //         std::cout << std::endl;
+    // }
+
+    std::cout << "IMG DATA: " << std::endl;  
+
+    for (size_t i = 0; i < this->img_size; i++) {
+        std::cout << (this->img_data[i + FORMAT_HEADER_SIZE] ? "P" : "N");
         std::cout << ((i + 1) % this->img_width == 0 ? "\n" : " ");
     }
 }

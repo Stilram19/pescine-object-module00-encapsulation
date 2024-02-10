@@ -9,11 +9,18 @@
 # include "Vector2.hpp"
 # include "HelpException.hpp"
 
-# define MAX_COORDINATE 10
+# define MAX_COORDINATE 9
 # define MIN_COORDINATE 2
 # define PIXEL_SCALE 4
+# define FILTER 0x0
+# define ZLIB_HEADER_SIZE 2
+# define CMF 0x00 // the window size is 2^8
+# define FLG 0x1f
+# define ESSENTIAL_DATA_INFO_SIZE 5
+# define FORMAT_HEADER_SIZE (ZLIB_HEADER_SIZE + ESSENTIAL_DATA_INFO_SIZE)
 # define POINT_COLOR 0xFF0000FF
 # define BACKGROUND_COLOR 0xFFFF0000
+# define CINFO (WINDOWN_SIZE_LOG - 8)
 
 class Graph {
 
@@ -23,6 +30,8 @@ class Graph {
             private:
                 size_t img_width;
                 size_t img_height;
+                size_t img_size;
+                size_t data_size;
                 int *img_data;
                 unsigned long crc_table[256];
 
@@ -38,6 +47,7 @@ class Graph {
                 void write_first_chunk(std::ofstream &os) const;
                 void write_data_chunk(std::ofstream &os) const;
                 void write_last_chunk(std::ofstream &os) const;
+                void insert_format_header();
                 unsigned long cycle_redundancy_check(unsigned char *data, size_t len) const;
 
             public:
