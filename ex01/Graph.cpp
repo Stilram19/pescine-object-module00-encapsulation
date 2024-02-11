@@ -299,14 +299,12 @@ void Graph::trim(std::string &str) {
 
 Graph::Png::Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size) {
     // 1 added to the width is for the filter bytes for each scanline (row)
-    this->img_width = (g_size.getX() + 1) * PIXEL_SCALE + 1;
+    this->img_width = (g_size.getX() + 1) * PIXEL_SCALE;
     this->img_height = (g_size.getY() + 1) * PIXEL_SCALE;
     this->img_size = this->img_width * this->img_height;
-    this->data_size = this->img_size + FORMAT_HEADER_SIZE;
-    this->img_data = new int[data_size];
+    this->img_data = new int[img_size];
 
-    // adding the format header
-    this->insert_format_header();
+    // this->get_format_header();
 
     // adding the pixels and the filter bytes
     for (size_t i = 0; i < v_data.size(); i++) {
@@ -315,7 +313,7 @@ Graph::Png::Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size) {
         for (size_t j = init_j * PIXEL_SCALE; j < (init_j + 1) * PIXEL_SCALE; j++) {
             for (size_t k = init_k * PIXEL_SCALE; k < (init_k + 1) * PIXEL_SCALE; k++) {
                 int index = j + k * this->img_width;
-                this->img_data[index + FORMAT_HEADER_SIZE + 1] = POINT_COLOR;
+                this->img_data[index] = POINT_COLOR;
             }
         }
     }
@@ -358,17 +356,21 @@ void Graph::Png::produce_png() const {
     os.close();
 }
 
-void Graph::Png::insert_format_header() {
+char *Graph::Png::get_format_header(size_t uncompressed_data_size) const {
+    char *format_header = new char[7];
+
     // the zlib header (2 bytes)
-    this->img_data[0] = CMF;
-    this->img_data[1] = FLG;
+    format_header[0] = CMF;
+    format_header[1] = FLG;
 
     // the essential infos (5 bytes)
-    this->img_data[2] = 0x01; // the first bit indicates the last data chunk
-    this->img_data[3] = this->img_size >> 8; // the size of the uncompressed data
-    this->img_data[4] = this->img_size;
-    this->img_data[5] = this->img_data[3] ^ 0xff; // the size in 1's complement (redundancy used for error detection)
-    this->img_data[6] = this->img_data[4] ^ 0xff;
+    format_header[2] = 0x01; // the first bit indicates the last data chunk
+    format_header[3] = uncompressed_data_size >> 8; // the size of the uncompressed data
+    format_header[4] = uncompressed_data_size;
+    format_header[5] = format_header[3] ^ 0xff; // the size in 1's complement (redundancy used for error detection)
+    format_header[6] = format_header[4] ^ 0xff;
+
+    return (format_header);
 }
 
 void Graph::Png::write_first_chunk(std::ofstream &os) const {
@@ -412,25 +414,40 @@ void Graph::Png::write_first_chunk(std::ofstream &os) const {
 }
 
 void Graph::Png::write_data_chunk(std::ofstream &os) const {
-    int little_endian_length = this->data_size * sizeof(int);
-    int big_endian_length = this->big_endian(little_endian_length);
+    int img_length = this->img_size * sizeof(int);
+    int _img_width = this->img_width * sizeof(int);
+    int uncompressed_data_length = img_length + this->img_height; // adding img_height to count filter bytes
     char type[] = "IDAT";
-    char *crc_input_data = new char[little_endian_length + sizeof(type) - 1];
+    size_t crc_input_data_size = 4 + FORMAT_HEADER_SIZE + uncompressed_data_length;
+    int chunk_data_length = this->big_endian(crc_input_data_size - 4);
+    char *crc_input_data = new char[crc_input_data_size];
+    char *format_header = this->get_format_header(uncompressed_data_length);
 
-    // std::cout << "LITTLE ENDIAN LENGTH: " << little_endian_length << std::endl;
+    memcpy(crc_input_data, type, 4);
+    // memcpy(crc_input_data + sizeof(type) - 1, this->img_data, little_endian_length);
+    memcpy(crc_input_data + 4, format_header, FORMAT_HEADER_SIZE);
 
-    memcpy(crc_input_data, type, sizeof(type) - 1);
-    memcpy(crc_input_data + sizeof(type) - 1, this->img_data, little_endian_length);
+    delete format_header;
 
-    // data length & chunk type
-    os.write(reinterpret_cast<char *>(&big_endian_length), sizeof(int));
-    os.write(type, sizeof(type) - 1);
+    // return ;
 
-    // chunk data
-    os.write(reinterpret_cast<char *>(this->img_data), little_endian_length);
+    for (size_t i = 0, j = FORMAT_HEADER_SIZE + 4; i < this->img_size; i += this->img_width) {
+        // the filter byte added to the beginning of each scanline
+        crc_input_data[j] = 0x0;
+        j++;
+        // rest of the scanline
+        memcpy(crc_input_data + j, this->img_data + i, _img_width);
+        j += _img_width;
+    }
+
+    // data length
+    os.write(reinterpret_cast<char *>(&chunk_data_length), sizeof(int));
+
+    // chunk type & format header & uncompressed data
+    os.write(crc_input_data, crc_input_data_size);
 
     // crc
-    unsigned int crc = this->cycle_redundancy_check(reinterpret_cast<unsigned char *>(crc_input_data), little_endian_length + sizeof(type) - 1);
+    unsigned int crc = this->cycle_redundancy_check(reinterpret_cast<unsigned char *>(crc_input_data), crc_input_data_size);
     unsigned int big_endian_crc = this->big_endian(crc);
 
     delete crc_input_data;
@@ -496,17 +513,10 @@ int Graph::Png::big_endian(int a) {
 void Graph::Png::displayData() const {
     std::cout << "IMG HEIGHT: " << this->img_height << ", IMG WIDTH: " << this->img_width << std::endl;
 
-    // std::cout << "FORMAT HEADER: " << std::endl;
-    // for (size_t i = 0; i < FORMAT_HEADER_SIZE; i++) {
-    //     std::cout << this->img_data[i];
-    //     if (i == FORMAT_HEADER_SIZE - 1)
-    //         std::cout << std::endl;
-    // }
-
     std::cout << "IMG DATA: " << std::endl;  
 
     for (size_t i = 0; i < this->img_size; i++) {
-        std::cout << (this->img_data[i + FORMAT_HEADER_SIZE] ? "P" : "N");
+        std::cout << (this->img_data[i] ? "P" : "N");
         std::cout << ((i + 1) % this->img_width == 0 ? "\n" : " ");
     }
 }

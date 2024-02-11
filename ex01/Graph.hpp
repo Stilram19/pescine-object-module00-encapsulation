@@ -20,7 +20,6 @@
 # define FORMAT_HEADER_SIZE (ZLIB_HEADER_SIZE + ESSENTIAL_DATA_INFO_SIZE)
 # define POINT_COLOR 0xFF0000FF
 # define BACKGROUND_COLOR 0xFFFF0000
-# define CINFO (WINDOWN_SIZE_LOG - 8)
 
 class Graph {
 
@@ -31,7 +30,6 @@ class Graph {
                 size_t img_width;
                 size_t img_height;
                 size_t img_size;
-                size_t data_size;
                 int *img_data;
                 unsigned long crc_table[256];
 
@@ -47,7 +45,7 @@ class Graph {
                 void write_first_chunk(std::ofstream &os) const;
                 void write_data_chunk(std::ofstream &os) const;
                 void write_last_chunk(std::ofstream &os) const;
-                void insert_format_header();
+                char *get_format_header(size_t uncompressed_data_size) const;
                 unsigned long cycle_redundancy_check(unsigned char *data, size_t len) const;
 
             public:
