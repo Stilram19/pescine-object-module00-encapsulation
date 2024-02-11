@@ -11,15 +11,13 @@
 
 # define MAX_COORDINATE 9
 # define MIN_COORDINATE 2
-# define PIXEL_SCALE 4
+# define PIXEL_SCALE 2
 # define FILTER 0x0
 # define ZLIB_HEADER_SIZE 2
-# define CMF 0x00 // the window size is 2^8
-# define FLG 0x1f
 # define ESSENTIAL_DATA_INFO_SIZE 5
 # define FORMAT_HEADER_SIZE (ZLIB_HEADER_SIZE + ESSENTIAL_DATA_INFO_SIZE)
-# define POINT_COLOR 0xFF0000FF
-# define BACKGROUND_COLOR 0xFFFF0000
+# define POINT_COLOR 0xFFFFFF00
+# define BACKGROUND_COLOR 0xFF0000FF
 
 class Graph {
 
@@ -45,8 +43,10 @@ class Graph {
                 void write_first_chunk(std::ofstream &os) const;
                 void write_data_chunk(std::ofstream &os) const;
                 void write_last_chunk(std::ofstream &os) const;
+                // int get_compression_info() const;
                 char *get_format_header(size_t uncompressed_data_size) const;
                 unsigned long cycle_redundancy_check(unsigned char *data, size_t len) const;
+                static u_int32_t adler32(u_int8_t *buffer, size_t buffer_size, u_int32_t previous_key);
 
             public:
                 Png(const std::vector<Vector2 *> &v_data, const Vector2 &g_size);
