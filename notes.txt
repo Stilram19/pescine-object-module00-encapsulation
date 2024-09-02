@@ -20,7 +20,7 @@ the details of the object hidden and safe from the outside.
 data hiding is done using access modifiers (private, public, protected).
 
 encapsulation reduces the complexity of code by hidding the details, and using the interface
-rather than manipulating the data in outside code.
+rather than manipulating the data outside the code.
 
 encapsulation vs abstraction:
 
@@ -29,7 +29,7 @@ at the design level. encapsulation's aim is to hide internal working of the clas
 without affecting the interface or the design. encapsulation is there to isolate concerns of classes: a class may depend on another
 class with just using the interface provided by the other class, and without having the access to the details.
 
-example of encapsulation: login into your account, the implementation of verification is hidding from the client.
+example of encapsulation: login into your account, the implementation of verification is hidden from the client.
 
 (*) Nested Classes/structs: since logically, there is no Account without a Bank, you may consider
 to encapsulate the declaration of Account within the declaration of Bank, thus it won't be accessible from outside
