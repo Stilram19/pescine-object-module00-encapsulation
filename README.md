@@ -71,8 +71,8 @@ Here is the link to the [subject](https://cdn.intra.42.fr/pdf/pdf/88947/en.subje
 
 
 ## Find Other Modules:
-[Module-00-Encapsulation](https://github.com/Stilram19/pescine-object-module00-encapsulation)
-[Module-01-Relationships](https://github.com/Stilram19/pescine-object-module01-Relationship)
-[Module-02-UML](https://github.com/Stilram19/pescine-object-module02-UML)
-[Module-03-SOLID](https://github.com/Stilram19/pescine-object-module03-SOLID)
-[Module-04-Design Patterns](https://github.com/Stilram19/pescine-object-module04-DesignPatterns)
+- [Module-00-Encapsulation](https://github.com/Stilram19/pescine-object-module00-encapsulation)
+- [Module-01-Relationships](https://github.com/Stilram19/pescine-object-module01-Relationship)
+- [Module-02-UML](https://github.com/Stilram19/pescine-object-module02-UML)
+- [Module-03-SOLID](https://github.com/Stilram19/pescine-object-module03-SOLID)
+- [Module-04-Design Patterns](https://github.com/Stilram19/pescine-object-module04-DesignPatterns)
