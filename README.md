@@ -1,6 +1,6 @@
 # Advanced OOP Pescine - Module 00 (encapsulation)
 
-![](resources/intro.png)
+![](resources/intro.jpg)
 
 ## About
 
