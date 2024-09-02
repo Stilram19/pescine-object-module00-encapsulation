@@ -1,0 +1,96 @@
+# Advanced OOP Pescine - Module 00 (encapsulation)
+
+![](resources/intro.png)
+
+## About
+
+the first module of the advanced pescine of object oriented programming using c++, it's about encapsulation. 
+Here is the link to the [subject](https://cdn.intra.42.fr/pdf/pdf/88947/en.subject.pdf)
+
+## Installation && Usage
+
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone git@github.com:Stilram19/pescine-object-module00-encapsulation.git
+   ```
+
+3. Navigate to the repository's directory:
+
+    ```bash
+    cd pescine-object-module00-encapsulation
+    ```
+
+4. Choose an exercise, Compile and Run the program:
+
+   ``` bash
+   cd ex00/ && make run
+   ```
+
+## Notes:
+
+(*) struct vs class in c++:
+
+struct and class can be used interchangeably, but the class keyword is the most popular in c++.
+the main difference is the default access control: while everything inside a class is private
+by default, everything inside a struct is public by default.
+the main reason why structs exist in c++ is for compatibility with c.
+So, There is no difference, apart from default encapsulation.
+
+(*) friend keyword:
+
+this keyword is used with classes and functions. a friend class or function can access
+the private and protected members. for functions they can be either global or member functions
+of other classes.
+Member functions cannot be declared as friends.
+for the std::ostream &operator<< function can be declared as a member function but the problem
+is that it can only have one argument. that's why you need to use the friend keyword.
+
+(*) About Encapsulation: it is wrapping up the data and functions in one unit. it keeps
+the details of the object hidden and safe from the outside.
+data hiding is done using access modifiers (private, public, protected).
+
+encapsulation reduces the complexity of code by hidding the details, and using the interface
+rather than manipulating the data outside the code.
+
+encapsulation vs abstraction:
+
+encapsulation hides the details at the implemetation level, and abstraction hides the details
+at the design level. encapsulation's aim is to hide internal working of the class, so that you can change it
+without affecting the interface or the design. encapsulation is there to isolate concerns of classes: a class may depend on another
+class with just using the interface provided by the other class, and without having the access to the details.
+
+example of encapsulation: login into your account, the implementation of verification is hidden from the client.
+
+(*) Nested Classes/structs: since logically, there is no Account without a Bank, you may consider
+to encapsulate the declaration of Account within the declaration of Bank, thus it won't be accessible from outside
+the namespace of Bank.
+
+(*) Subscript operator overloading: it's a very good idea to overload subscript operator
+because it makes the code user friendly (better than setters and getters in some cases).
+the fact that we're returning a reference to an element in the class, the user may modify it as well as read it,
+and to encapsulate data, you may consider to return a const reference for read purposes only.
+
+(*) throw; : By using throw; without specifying an exception object (throw;), you re-throw the caught exception as-is, preserving its original type and context, including the stack trace. This ensures that the exception propagates up the call stack with all relevant information intact.
+
+(*) streams: In computer science, a stream is a sequence of data elements made available over time. It is a concept used to model data flow, where data is processed piece by piece as it becomes available, rather than waiting for the entire dataset to be loaded into memory.
+of course this is done using a buffer (for reading from a file or writing to a file).
+
+(*) Endianness: the order in which the bytes of a word are stored in a computer system
+counting only byte significance with earliness.
+
+(*) big endianness: storing the most significant byte in the smallest address.
+(*) little endianness: storing the most significant byte in the biggest address.
+
+big endianness is the dominant ordering in network protocols, while little endianness is the dominant
+ordering for processor architectures.
+
+big endianness can be refered to as network byte order.
+
+
+## Find Other Modules:
+[Module-00-Encapsulation](https://github.com/Stilram19/pescine-object-module00-encapsulation)
+[Module-01-Relationships](https://github.com/Stilram19/pescine-object-module01-Relationship)
+[Module-02-UML](https://github.com/Stilram19/pescine-object-module02-UML)
+[Module-03-SOLID](https://github.com/Stilram19/pescine-object-module03-SOLID)
+[Module-04-Design Patterns](https://github.com/Stilram19/pescine-object-module04-DesignPatterns)
