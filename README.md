@@ -1,10 +1,10 @@
-# Advanced OOP Pescine - Module 00 (encapsulation)
+# Advanced OOP Piscine - Module 00 (encapsulation)
 
 ![](resources/intro.jpg)
 
 ## About
 
-the first module of the advanced pescine of object oriented programming using c++, it's about encapsulation. 
+the first module of the advanced piscine of object oriented programming using c++, it's about encapsulation. 
 Here is the link to the [subject](https://cdn.intra.42.fr/pdf/pdf/88947/en.subject.pdf)
 
 ## Installation && Usage
